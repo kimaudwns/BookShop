@@ -43,8 +43,8 @@ pipeline {
                 echo 'Docker Image build'                
                 dir("${env.WORKSPACE}") {
                     sh """
-                    docker build -t kimaudwns/BookShop:$BUILD_NUMBER .
-                    docker tag kimaudwns/bookShop:$BUILD_NUMBER kimaudwns/BookShop:latest
+                    docker build -t kimaudwns/bookShop:$BUILD_NUMBER .
+                    docker tag kimaudwns/bookShop:$BUILD_NUMBER kimaudwns/bookShop:latest
                     """
                 }
             }
