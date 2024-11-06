@@ -35,11 +35,7 @@ pipeline {
                    sh 'mvn -Dmaven.test.failure.ignore=true package'
                 }
             }
-            post {
-                success {
-                    junit '**/target/BookShop/-*.xml'
-                }
-            }
+
         }
         
         stage('Docker Image Build') {
