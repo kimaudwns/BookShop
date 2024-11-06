@@ -37,7 +37,7 @@ pipeline {
             }
             post {
                 success {
-                    junit '**/target/BookShop/TEST-*.xml'
+                    junit '**/target/BookShop/-*.xml'
                 }
             }
         }
