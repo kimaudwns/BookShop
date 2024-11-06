@@ -31,6 +31,10 @@ pipeline {
         stage('Maven Build') {
             steps {
                 echo 'Maven Build'
+                dir('bookShop01'){
+                   sh 'mvn -Dmaven.test.failure.ignore=true package'
+                }
+
                 sh 'mvn -Dmaven.test.failure.ignore=true package'
             }
             post {
