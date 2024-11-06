@@ -43,8 +43,8 @@ pipeline {
                 echo 'Docker Image build'                
                 dir("${env.WORKSPACE}") {
                     sh """
-                    docker build -t kimaudwns/bookShop:$BUILD_NUMBER .
-                    docker tag kimaudwns/bookShop:$BUILD_NUMBER kimaudwns/bookShop:latest
+                    docker build -t kimaudwns/bookshop:$BUILD_NUMBER .
+                    docker tag kimaudwns/bookshop:$BUILD_NUMBER kimaudwns/bookshop:latest
                     """
                 }
             }
@@ -60,7 +60,7 @@ pipeline {
         stage('Docker Image Push') {
             steps {
                 echo 'Docker Image Push'  
-                sh "docker push kimaudwns/bookShop:latest"  // Docker 이미지 푸시
+                sh "docker push kimaudwns/bookshop:latest"  // Docker 이미지 푸시
             }
         }
         
@@ -69,8 +69,8 @@ pipeline {
                 // Jenkins 서버의 사용하지 않는 Docker 이미지 제거
                 echo 'Cleaning up unused Docker images on Jenkins server'
                 sh """
-                docker rmi kimaudwns/bookShop:$BUILD_NUMBER
-                docker rmi kimaudwns/bookShop:latest
+                docker rmi kimaudwns/bookshop:$BUILD_NUMBER
+                docker rmi kimaudwns/bookshop:latest
                 """
             }
         }
