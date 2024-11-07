@@ -70,8 +70,9 @@ pipeline {
                 echo 'Cleaning up unused Docker images on Jenkins server'
                 sh """
                 docker rmi kimaudwns/bookshop:$BUILD_NUMBER
-                docker rmi kimaudwns/bookshop:latest
                 """
+                //docker rmi kimaudwns/bookshop:latest
+                //"""
             }
         }
         
