@@ -1,6 +1,6 @@
 pipeline {
     agent any
-    
+
     tools {
         jdk 'jdk11'
         maven 'M3'
@@ -35,7 +35,6 @@ pipeline {
                    sh 'mvn -Dmaven.test.failure.ignore=true package'
                 }
             }
-
         }
         
         stage('Docker Image Build') {
@@ -43,8 +42,8 @@ pipeline {
                 echo 'Docker Image build'                
                 dir("${env.WORKSPACE}") {
                     sh """
-                    docker build -t kimaudwns/bookshop:$BUILD_NUMBER .
-                    docker tag kimaudwns/bookshop:$BUILD_NUMBER kimaudwns/bookshop:latest
+                    docker build -t kimaudwns/bookshop:${BUILD_NUMBER} .
+                    docker tag kimaudwns/bookshop:${BUILD_NUMBER} kimaudwns/bookshop:latest
                     """
                 }
             }
@@ -60,7 +59,10 @@ pipeline {
         stage('Docker Image Push') {
             steps {
                 echo 'Docker Image Push'  
-                sh "docker push kimaudwns/bookshop:latest"  // Docker 이미지 푸시
+                sh """
+                docker push kimaudwns/bookshop:${BUILD_NUMBER}
+                docker push kimaudwns/bookshop:latest
+                """  // Docker 이미지 푸시
             }
         }
         
@@ -69,10 +71,8 @@ pipeline {
                 // Jenkins 서버의 사용하지 않는 Docker 이미지 제거
                 echo 'Cleaning up unused Docker images on Jenkins server'
                 sh """
-                docker rmi kimaudwns/bookshop:$BUILD_NUMBER
+                docker rmi kimaudwns/bookshop:${BUILD_NUMBER}
                 """
-                //docker rmi kimaudwns/bookshop:latest
-                //"""
             }
         }
         
@@ -94,30 +94,38 @@ pipeline {
 
         stage('Codedeploy Workload') {
             steps {
-                echo "create Codedeploy group"
-                
-                // AWS 자격 증명 설정 추가 (withAWS 블록 사용)
+                echo "create Codedeploy deployment"
+
                 withAWS(region: "${REGION}", credentials: "${AWS_CREDENTIAL_NAME}") {
+                    // 이전 배포 그룹 삭제 (선택 사항: 새로운 배포 그룹을 고정해서 사용하려면 이 단계 생략 가능)
+                    sh '''
+                    aws deploy delete-deployment-group \
+                    --application-name team5-codedeploy \
+                    --deployment-group-name team5-codedeploy-group || true
+                    '''
+                    
+                    // 새로운 배포 그룹 생성
                     sh '''
                     aws deploy create-deployment-group \
                     --application-name team5-codedeploy \
                     --auto-scaling-groups team5-asg \
-                    --deployment-group-name team5-codedeploy-${BUILD_NUMBER} \
+                    --deployment-group-name team5-codedeploy-group \
                     --deployment-config-name CodeDeployDefault.OneAtATime \
                     --service-role-arn arn:aws:iam::491085389788:role/team5-CodeDeployServiceRole
-                       '''
-                    echo "Codedeploy Workload"
+                    '''
+
+                    // 새로운 배포 생성
                     sh '''
                     aws deploy create-deployment \
                     --application-name team5-codedeploy \
                     --deployment-config-name CodeDeployDefault.OneAtATime \
-                    --deployment-group-name team5-codedeploy-${BUILD_NUMBER} \
+                    --deployment-group-name team5-codedeploy-group \
                     --s3-location bucket=team5-codedeploy-bucket,bundleType=zip,key=deploy.zip
                     '''
                 }
-                
-                sleep(10)  // 10초 대
-         }
+
+                sleep(10)  // 10초 대기
+            }
         }
     }
 }
