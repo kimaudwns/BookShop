@@ -97,13 +97,6 @@ pipeline {
                 echo "create Codedeploy deployment"
 
                 withAWS(region: "${REGION}", credentials: "${AWS_CREDENTIAL_NAME}") {
-                    // 이전 배포 그룹 삭제 (선택 사항: 새로운 배포 그룹을 고정해서 사용하려면 이 단계 생략 가능)
-                    sh '''
-                    aws deploy delete-deployment-group \
-                    --application-name team5-codedeploy \
-                    --deployment-group-name team5-codedeploy-group || true
-                    '''
-                    
                     // 새로운 배포 그룹 생성
                     sh '''
                     aws deploy create-deployment-group \
