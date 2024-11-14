@@ -43,7 +43,7 @@ pipeline {
                 dir("${env.WORKSPACE}") {
                     sh """
                     docker build -t kimaudwns/bookshop:${BUILD_NUMBER} .
-                    docker tag kimaudwns/bookshop:${BUILD_NUMBER} kimaudwns/bookshop:${BUILD_NUMBER}
+                    docker tag kimaudwns/bookshop:${BUILD_NUMBER} kimaudwns/bookshop:latest
                     """
                 }
             }
@@ -60,8 +60,7 @@ pipeline {
             steps {
                 echo 'Docker Image Push'  
                 sh """
-                docker push kimaudwns/bookshop:${BUILD_NUMBER}
-                docker push kimaudwns/bookshop:${BUILD_NUMBER}
+                docker push kimaudwns/bookshop:latest
                 """  // Docker 이미지 푸시
             }
         }
