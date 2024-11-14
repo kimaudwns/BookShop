@@ -1,7 +1,7 @@
 version: '3.9'
 services:
   spring-petclinic:
-    image: kimaudwns/bookshop:latest
+    image: kimaudwns/bookshop:${BUILD_NUMBER}
     container_name: bookshop
     ports:
       - "80:8080"
