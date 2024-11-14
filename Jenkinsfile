@@ -97,20 +97,6 @@ pipeline {
                 echo "create Codedeploy deployment"
 
                 withAWS(region: "${REGION}", credentials: "${AWS_CREDENTIAL_NAME}") {
-                    sh '''
-                    aws deploy delete-deployment-group \
-                    --application-name team5-codedeploy \
-                    --deployment-group-name team5-codedeploy-group || true
-                    '''
-                    
-                    sh '''
-                    aws deploy create-deployment-group \
-                    --application-name team5-codedeploy \
-                    --auto-scaling-groups team5-asg \
-                    --deployment-group-name team5-codedeploy-group \
-                    --deployment-config-name CodeDeployDefault.OneAtATime \
-                    --service-role-arn arn:aws:iam::491085389788:role/team5-CodeDeployServiceRole
-                    '''
 
                     // 새로운 배포 생성
                     sh '''
