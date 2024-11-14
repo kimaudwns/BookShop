@@ -7,13 +7,11 @@ docker rm bookshop || true
 
 # 현재 실행 중인 이미지 삭제
 echo "Removing old Docker image..."
-docker rmi kimaudwns/bookshop:latest || true
-
-# 이미지가 없을 경우 메시지 출력
-if [[ $? -eq 0 ]]; then
+if docker images | grep -q "kimaudwns/bookshop:latest"; then
+    docker rmi kimaudwns/bookshop:latest || true
     echo "Docker image kimaudwns/bookshop:latest removed successfully."
 else
-    echo "No image found or failed to remove the image."
+    echo "No old image found to remove."
 fi
 
 # 새로운 이미지 빌드 및 실행
