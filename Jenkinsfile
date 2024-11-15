@@ -103,7 +103,7 @@ pipeline {
                     --application-name team5-codedeploy \
                     --deployment-group-name team5-codedeploy-group \
                     --deployment-config-name CodeDeployDefault.OneAtATime \
-                    --service-role-arn arn:aws:iam::${AWS_ACCOUNT_ID}:role/CodeDeployServiceRole \
+                    --service-role-arn arn:aws:iam::491085389788:role/team5-CodeDeployServiceRole
                     --ec2-tag-filters Key=Name,Value=your-ec2-instance-tag,Type=KEY_AND_VALUE
             else
                 echo "Deployment group already exists."
