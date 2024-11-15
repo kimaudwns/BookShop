@@ -96,6 +96,29 @@ pipeline {
                 echo "create Codedeploy deployment"
 
                 withAWS(region: "${REGION}", credentials: "${AWS_CREDENTIAL_NAME}") {
+                    
+                 // 배포 그룹이 있는지 확인하고, 없으면 생성
+                    sh '''
+                   # Check if the deployment group exists
+                   deployment_group_check=$(aws deploy get-deployment-group \
+                   --application-name team5-codedeploy \
+                   --deployment-group-name team5-codedeploy-group \
+                   --query "deploymentGroupInfo.deploymentGroupName" \
+                   --output text)
+
+            if [ "$deployment_group_check" == "None" ]; then
+                echo "Deployment group not found. Creating a new deployment group..."
+
+                # 배포 그룹 생성
+                aws deploy create-deployment-group \
+                    --application-name team5-codedeploy \
+                    --deployment-group-name team5-codedeploy-group \
+                    --deployment-config-name CodeDeployDefault.OneAtATime \
+                    --service-role-arn arn:aws:iam::${AWS_ACCOUNT_ID}:role/CodeDeployServiceRole \
+                    --ec2-tag-filters Key=Name,Value=your-ec2-instance-tag,Type=KEY_AND_VALUE
+            else
+                echo "Deployment group already exists."
+            fi
 
                     // 새로운 배포 생성
                     sh '''
