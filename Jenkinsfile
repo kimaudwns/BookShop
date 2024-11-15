@@ -97,16 +97,7 @@ pipeline {
 
         withAWS(region: "${REGION}", credentials: "${AWS_CREDENTIAL_NAME}") {
             sh '''
-            # Check if the deployment group exists
-            deployment_group_check=$(aws deploy get-deployment-group \
-                --application-name team5-codedeploy \
-                --deployment-group-name team5-codedeploy-group \
-                --query "deploymentGroupInfo.deploymentGroupName" \
-                --output text 2>/dev/null)
-
-            if [ "$deployment_group_check" == "None" ] || [ -z "$deployment_group_check" ]; then
-                echo "Deployment group not found. Creating a new deployment group..."
-
+           
                 # 배포 그룹 생성
                 aws deploy create-deployment-group \
                     --application-name team5-codedeploy \
