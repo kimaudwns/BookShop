@@ -61,7 +61,7 @@ pipeline {
                 echo 'Docker Image Push'  
                 sh """
                 docker push kimaudwns/bookshop:latest
-                """  // Docker 이미지 푸시
+                """  // Docker 이미지 푸
             }
         }
         
