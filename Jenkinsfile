@@ -92,19 +92,17 @@ pipeline {
         }
 
         stage('Codedeploy Workload') {
-            steps {
-                echo "create Codedeploy deployment"
+        steps {
+        echo "Create Codedeploy deployment"
 
-                withAWS(region: "${REGION}", credentials: "${AWS_CREDENTIAL_NAME}") {
-                    
-                 // 배포 그룹이 있는지 확인하고, 없으면 생성
-                    sh '''
-                   # Check if the deployment group exists
-                   deployment_group_check=$(aws deploy get-deployment-group \
-                   --application-name team5-codedeploy \
-                   --deployment-group-name team5-codedeploy-group \
-                   --query "deploymentGroupInfo.deploymentGroupName" \
-                   --output text)
+        withAWS(region: "${REGION}", credentials: "${AWS_CREDENTIAL_NAME}") {
+            sh '''
+            # Check if the deployment group exists
+            deployment_group_check=$(aws deploy get-deployment-group \
+                --application-name team5-codedeploy \
+                --deployment-group-name team5-codedeploy-group \
+                --query "deploymentGroupInfo.deploymentGroupName" \
+                --output text)
 
             if [ "$deployment_group_check" == "None" ]; then
                 echo "Deployment group not found. Creating a new deployment group..."
@@ -120,18 +118,17 @@ pipeline {
                 echo "Deployment group already exists."
             fi
 
-                    // 새로운 배포 생성
-                    sh '''
-                    aws deploy create-deployment \
-                    --application-name team5-codedeploy \
-                    --deployment-config-name CodeDeployDefault.OneAtATime \
-                    --deployment-group-name team5-codedeploy-group \
-                    --s3-location bucket=team5-codedeploy-bucket,bundleType=zip,key=deploy.zip
-                    '''
-                }
-
-                sleep(10)  // 10초 대기 
-            }
+            # 새로운 배포 생성
+            aws deploy create-deployment \
+                --application-name team5-codedeploy \
+                --deployment-config-name CodeDeployDefault.OneAtATATime \
+                --deployment-group-name team5-codedeploy-group \
+                --s3-location bucket=team5-codedeploy-bucket,bundleType=zip,key=deploy.zip
+            '''
         }
+
+        sleep(10)  // 10초 대기 
+         }
+       }   
     }
 }
